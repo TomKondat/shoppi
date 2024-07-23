@@ -1,0 +1,12 @@
+{
+  "name": "dom-tutorial",
+  "version": "1.0.0",
+  "description": "learning fuul stack",
+  "main": "arrays.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alex",
+  "license": "ISC"
+
+}

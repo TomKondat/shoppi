@@ -1,0 +1,196 @@
+@import url('https://fonts.googleapis.com/css2?family=Monoton&display=swap');
+* {
+  box-sizing: border-box;
+}
+img {
+  width: 100%;
+}
+body{
+ margin:0px
+}
+.overlay{
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.844);
+  position: fixed;
+  z-index: 2;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  animation: fade-in 500ms forwards
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+}
+to {
+   
+    opacity: 1;
+}
+}
+@keyframes fade-out {
+  from {
+    opacity: 1;
+}
+to {
+   
+    opacity: 0;
+}
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+}
+to {
+   
+    opacity: 1;
+}
+}
+.modal{
+  width: 33vw;
+  min-height: 50vh;
+  background-color: white;
+  position: absolute;
+  border-radius: 5px;
+  box-shadow: 2px 2px 3px black;
+  animation: zoom-in 500ms  forwards
+  
+  
+}
+@keyframes zoom-in {
+  from {
+      transform: scale(0.5);
+      opacity: 0;
+  }
+  to {
+      transform: scale(1);
+      opacity: 1;
+  }
+}
+.modal .modal-close-btn{
+  background-color: red;
+  float: right;
+}
+#shopping-cart-list{
+  width: 95%;
+  margin: 0 auto;
+  border:1px  solid rgba(128, 128, 128, 0.72);
+  border-radius:5px;
+  border-collapse: collapse;
+}
+#shopping-cart-list tr{
+  display: flex;
+}
+
+#shopping-cart-list tr:nth-child(even){
+ background-color: rgba(158, 219, 158, 0.571);
+}
+#shopping-cart-list td, #shopping-cart-list input{
+  border-top:1px  solid rgba(128, 128, 128, 0.72);
+  border-bottom:1px  solid rgba(128, 128, 128, 0.72);
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  width: 50%;
+}
+#shopping-cart-list td button{
+width:40px;
+height:40px;
+margin-left: 3px;
+margin-right: 3px;
+padding: 5px;
+color:white;
+border:1px solid gray;
+border-radius: 5px;
+}
+#shopping-cart-list td button:first-child{
+  background-color: red;
+}
+#shopping-cart-list td button:nth-child(3){
+  background-color: green;
+}
+header{
+  min-height: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgb(62,253,255);
+  background: linear-gradient(38deg, rgba(62,253,255,1) 0%, rgba(45,84,253,1) 100%);
+}
+header div:first-child{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+header div:nth-child(2){
+ padding: 16px;
+}
+header div:nth-child(2) input{
+  padding: 16px;
+  font-size: 1.5rem;
+ }
+ header div:nth-child(2) button{
+  padding: 16px;
+  font-size: 1.5rem;
+  border-radius: 5px;
+  background-color: orange;
+ }
+ header div:nth-child(2) button:hover{
+  cursor: pointer;
+ }
+header h1{
+  font-family: "Monoton", sans-serif;
+  color:orange;
+  font-size: 5rem;
+  letter-spacing: 13px;
+  font-weight: 400;
+  font-style: normal;
+}
+#root {
+  padding: 7px;
+  width: 70vw;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+}
+[id*="edit_form_"]{
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.card {
+  width: 33%;
+  margin: 2px;
+  text-align: center;
+  border-radius: 5px;
+  border: 1px solid gray;
+  padding: 13px;
+}
+a {
+  text-decoration: none;
+}
+.card .btn {
+  width: 30%;
+  margin: 3px;
+  padding: 7px;
+  background-color: green;
+  color: white;
+  border-radius: 5px;
+}
+.edit-btn{
+  background-color: rgb(255, 213, 0);
+  border-radius: 50%;
+  float:right;
+  padding: 7px;
+}
+.point{
+  width:50px;
+  height:50px;
+  background-color: red;
+  position: absolute;
+  top:50vh;
+  left:50%;
+  border-radius:50%
+}

@@ -1,0 +1,230 @@
+import { addNewProduct, editProduct, getProducts } from "./apiServices.js";
+
+const rootEl = document.getElementById("root");
+const searchBtn = document.querySelector("header div:nth-child(2) button");
+/* const searchForm = document.querySelector('header div:nth-child(2) form') */
+const addProductForm = document.getElementById("add-product");
+const inputSearch = document.getElementById("inputSearch");
+const openModalBtn = document.getElementById("openModal");
+const closeModalBtn = document.querySelector(".modal-close-btn");
+
+let shoppingCart = [];
+const handleAddProductToCart = (e) => {
+  const id = e.target.id.split("_")[1];
+  ///1 the product is in cart ---> update the quantity
+  let alreadyInCart = false;
+  shoppingCart = shoppingCart.map((product) => {
+    if (product.id === id) {
+      product.quantity++;
+      alreadyInCart = true;
+    }
+
+    return product;
+  });
+  if (alreadyInCart) {
+    return;
+  }
+  ///2 The product is not in cart ----> find it in products and add to cart
+  const product = products.find((product) => product.id === id);
+  const cartProduct = { ...product };
+  cartProduct.quantity = 1;
+  shoppingCart.push(cartProduct);
+};
+const handleToggleEditMode = (e) => {
+  //const id = e.target.id.split("_")[1]
+  console.log(e.target.parentElement.children[3]);
+  if (e.target.parentElement.children[3].style.display == "flex")
+    e.target.parentElement.children[3].style.display = "none";
+  else e.target.parentElement.children[3].style.display = "flex";
+};
+const handleSubmitEditProduct = (e) => {
+  e.preventDefault();
+  const id = e.target.id.split("_")[2];
+  const name = e.target.children[0].value;
+  const price = e.target.children[1].value;
+  editProduct(id, name, price).then(() => {
+    getProducts().then((products) =>
+      render(rootEl, products.products, createCardEl)
+    );
+  });
+};
+
+////PRODUCT CARD LOGIC
+const createCardEl = (productObj) => {
+  const cardEl = document.createElement("div");
+  cardEl.className = "card";
+
+  const editBtnEl = document.createElement("button");
+  editBtnEl.id = `edit_${productObj.id}`;
+  editBtnEl.innerHTML = "edit";
+  editBtnEl.className = "edit-btn";
+  editBtnEl.addEventListener("click", handleToggleEditMode);
+
+  const imgEl = document.createElement("img");
+  imgEl.src = productObj.image;
+  imgEl.alt = productObj.name;
+  cardEl.append(imgEl);
+  cardEl.innerHTML += `<div class="card-body">
+         <h5 class="card-title">${productObj.name}</h5>
+        <p class="card-text">Price ${productObj.price}</p>
+       
+       </div>`;
+  const editFormEl = document.createElement("form");
+  editFormEl.id = `edit_form_${productObj.id}`;
+
+  const editNameInputEl = document.createElement("input");
+  editNameInputEl.value = productObj.name;
+  editNameInputEl.placeholder = "edit name";
+  editNameInputEl.type = "text";
+  editFormEl.append(editNameInputEl);
+
+  const editPriceInputEl = document.createElement("input");
+  editPriceInputEl.value = productObj.price;
+  editPriceInputEl.placeholder = "edit price";
+  editPriceInputEl.type = "number";
+  editFormEl.append(editPriceInputEl);
+
+  const editSubmitInputEl = document.createElement("input");
+  editSubmitInputEl.value = "Save Changes";
+  editSubmitInputEl.type = "submit";
+  editFormEl.addEventListener("submit", handleSubmitEditProduct);
+  editFormEl.append(editSubmitInputEl);
+  cardEl.append(editFormEl);
+  const addToCartBtn = document.createElement("button");
+  addToCartBtn.className = "btn btn-primary";
+  addToCartBtn.id = `btn_${productObj.id}`;
+  addToCartBtn.innerHTML = `Buy ${productObj.name} Now!`;
+  addToCartBtn.addEventListener("click", handleAddProductToCart);
+  cardEl.append(addToCartBtn);
+  cardEl.prepend(editBtnEl);
+  return cardEl;
+};
+//add or remove product from cart
+const handleChangeQuantity = (e) => {
+  ///1 extract from the event the product id
+  const id = e.target.id.split("_")[1];
+  ///2 find product by its id in shopping cart
+  const product = shoppingCart.find((product) => product.id === id);
+  ///3 check the requested action acoording to btn innerHtml
+  const action = e.target.innerHTML;
+  console.log(action);
+  if (action === "+") product.quantity++;
+  else if (action === "-" || e.target.value == 0) {
+    if (product.quantity == 1) {
+      confirm("Are your sure you want to remove this product?");
+      shoppingCart = shoppingCart.filter((product) => product.id !== id);
+    }
+    product.quantity--;
+  } else {
+    product.quantity = e.target.value;
+  }
+  //re render after change
+  const cartTableEl = document.getElementById("shopping-cart-list");
+  render(cartTableEl, shoppingCart, createCardShoppingCartProductTrEl);
+};
+const createCardShoppingCartProductTrEl = (productObj) => {
+  //creating tr element
+  const trEl = document.createElement("tr");
+  trEl.className = "cart-item-row";
+  //td 1
+  let tdEl = document.createElement("td");
+  tdEl.innerHTML = `<h3>${productObj.name}</h3>`;
+  trEl.append(tdEl);
+  //td 2
+  tdEl = document.createElement("td");
+
+  const inputEl = document.createElement("input");
+  inputEl.type = "number";
+  inputEl.min = 0;
+  inputEl.max = 10;
+
+  inputEl.value = productObj.quantity;
+  inputEl.id = `input_${productObj.id}`;
+  addEventListener("change", handleChangeQuantity);
+  tdEl.append(inputEl);
+  //minus btn
+  const btnMinus = document.createElement("button");
+  btnMinus.innerHTML = "-";
+  btnMinus.id = `btn-minus_${productObj.id}`;
+  btnMinus.addEventListener("click", handleChangeQuantity);
+  tdEl.prepend(btnMinus);
+  //plus btn
+  const btnPlus = document.createElement("button");
+  btnPlus.innerHTML = "+";
+  btnPlus.id = `btn-plus_${productObj.id}`;
+  btnPlus.addEventListener("click", handleChangeQuantity);
+  tdEl.append(btnPlus);
+
+  trEl.append(tdEl);
+  return trEl;
+};
+const handleAddProduct = (e) => {
+  e.preventDefault();
+  const name = e.target.children[0].value;
+  const price = e.target.children[1].value;
+  const cat = e.target.children[2].value;
+  const image = e.target.children[3].value;
+  addNewProduct(name, price, cat, image).then(() => {
+    getProducts().then((products) =>
+      render(rootEl, products.products, createCardEl)
+    );
+  });
+};
+const addContent = (elToAppend, contentElToBeAdded) =>
+  elToAppend.append(contentElToBeAdded);
+
+const render = (elToRenderIn, objArr, createCard) => {
+  elToRenderIn.innerHTML = "";
+  objArr.map((el) => addContent(elToRenderIn, createCard(el)));
+};
+getProducts().then((products) =>
+  render(rootEl, products.products, createCardEl)
+);
+
+/* const handleSearchProducts = ()=>{
+  const searchTerm = inputSearch.value
+  const filteredArr = products.filter(product => product.name.toLocaleLowerCase().startsWith(searchTerm.toLocaleLowerCase()) )
+  render(rootEl, filteredArr, createCardEl)
+} */
+const handleSearchOnInput = (e) => {
+  const searchTerm = e.target.value;
+  console.log(searchTerm);
+  const filteredArr = products.filter((product) =>
+    product.name.toLocaleLowerCase().startsWith(searchTerm.toLocaleLowerCase())
+  );
+  render(rootEl, filteredArr, createCardEl);
+};
+const handleSearchOnSubmit = (e) => {
+  e.preventDefault();
+  console.log(e.target.children);
+  const searchTerm = e.target.children[0].value;
+  const filteredArr = products.filter((product) =>
+    product.name.toLocaleLowerCase().startsWith(searchTerm.toLocaleLowerCase())
+  );
+  render(rootEl, filteredArr, createCardEl);
+};
+
+////MODAL LOGIC
+const handleShowModal = () => {
+  const modalOverlayEl = document.querySelector(".overlay");
+  modalOverlayEl.style.display = "flex";
+  modalOverlayEl.style.animation = "fade-in 500ms forwards";
+  const cartTableEl = document.getElementById("shopping-cart-list");
+  render(cartTableEl, shoppingCart, createCardShoppingCartProductTrEl);
+};
+const handleCloseModal = () => {
+  const modalOverlayEl = document.querySelector(".overlay");
+  modalOverlayEl.style.animation = "fade-out 500ms  forwards";
+  // modalOverlayEl.style.display = 'none'
+  setTimeout(() => {
+    modalOverlayEl.style.display = "none";
+  }, 500);
+};
+
+/* searchForm.addEventListener('submit', handleSearchOnSubmit)
+ */ /* inputSearch.addEventListener('input', handleSearchOnInput) */
+/* searchBtn.addEventListener('click', handleSearchProducts) */
+
+openModalBtn.addEventListener("click", handleShowModal);
+closeModalBtn.addEventListener("click", handleCloseModal);
+addProductForm.addEventListener("submit", handleAddProduct);

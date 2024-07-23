@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <!--  <script src="script.js" defer></script>
+    <script src="modal.js" defer></script> -->
+    <script src="main.js" defer type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!--  <script src="events.js" defer></script> -->
+    <title>Dom - Tutorial</title>
+  </head>
+  <body>
+    <div class="overlay">
+      <div class="modal" id="shopping-cart-modal">
+        <button class="modal-close-btn">x</button>
+        <table id="shopping-cart-list"></table>
+      </div>
+    </div>
+
+    <header>
+      <form id="add-product">
+        <input type="text" placeholder="Enter name" />
+        <input type="text" placeholder="Enter price" />
+        <select>
+          <option disabled hidden>Select Category</option>
+          <option value="a">animals</option>
+          <option value="c">clothing</option>
+          <option value="f">food</option>
+        </select>
+        <input type="text" placeholder="Enter image link" />
+        <input type="submit" value="add product" />
+      </form>
+      <div>
+        <h1>Shoppi</h1>
+      </div>
+      <div>
+        <form>
+          <input type="text" id="inputSearch" placeholder="search here..." />
+          <input type="submit" hidden />
+        </form>
+        <!--  <button>Search🔎</button> -->
+        <!--  <select  id=""></select> -->
+        <button id="openModal">show modal</button>
+      </div>
+    </header>
+    <section id="root"></section>
+  </body>
+</html>
