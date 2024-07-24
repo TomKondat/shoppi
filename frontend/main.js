@@ -39,10 +39,13 @@ const handleToggleEditMode = (e) => {
 };
 const handleSubmitEditProduct = (e) => {
   e.preventDefault();
+  console.log(e.target.id);
   const id = e.target.id.split("_")[2];
   const name = e.target.children[0].value;
   const price = e.target.children[1].value;
   editProduct(id, name, price).then(() => {
+    console.log(`id: ${id}   name${name}   price: ${price}`);
+
     getProducts().then((products) =>
       render(rootEl, products.products, createCardEl)
     );
@@ -55,7 +58,7 @@ const createCardEl = (productObj) => {
   cardEl.className = "card";
 
   const editBtnEl = document.createElement("button");
-  editBtnEl.id = `edit_${productObj.id}`;
+  editBtnEl.id = `edit_${productObj._id}`;
   editBtnEl.innerHTML = "edit";
   editBtnEl.className = "edit-btn";
   editBtnEl.addEventListener("click", handleToggleEditMode);
@@ -70,7 +73,7 @@ const createCardEl = (productObj) => {
        
        </div>`;
   const editFormEl = document.createElement("form");
-  editFormEl.id = `edit_form_${productObj.id}`;
+  editFormEl.id = `edit_form_${productObj._id}`;
 
   const editNameInputEl = document.createElement("input");
   editNameInputEl.value = productObj.name;
@@ -92,7 +95,7 @@ const createCardEl = (productObj) => {
   cardEl.append(editFormEl);
   const addToCartBtn = document.createElement("button");
   addToCartBtn.className = "btn btn-primary";
-  addToCartBtn.id = `btn_${productObj.id}`;
+  addToCartBtn.id = `btn_${productObj._id}`;
   addToCartBtn.innerHTML = `Buy ${productObj.name} Now!`;
   addToCartBtn.addEventListener("click", handleAddProductToCart);
   cardEl.append(addToCartBtn);
@@ -139,19 +142,19 @@ const createCardShoppingCartProductTrEl = (productObj) => {
   inputEl.max = 10;
 
   inputEl.value = productObj.quantity;
-  inputEl.id = `input_${productObj.id}`;
+  inputEl.id = `input_${productObj._id}`;
   addEventListener("change", handleChangeQuantity);
   tdEl.append(inputEl);
   //minus btn
   const btnMinus = document.createElement("button");
   btnMinus.innerHTML = "-";
-  btnMinus.id = `btn-minus_${productObj.id}`;
+  btnMinus.id = `btn-minus_${productObj._id}`;
   btnMinus.addEventListener("click", handleChangeQuantity);
   tdEl.prepend(btnMinus);
   //plus btn
   const btnPlus = document.createElement("button");
   btnPlus.innerHTML = "+";
-  btnPlus.id = `btn-plus_${productObj.id}`;
+  btnPlus.id = `btn-plus_${productObj._id}`;
   btnPlus.addEventListener("click", handleChangeQuantity);
   tdEl.append(btnPlus);
 
