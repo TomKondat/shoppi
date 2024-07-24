@@ -96,7 +96,6 @@ exports.getProducts = async (req, res) => {
 };
 
 exports.createProduct = async (req, res) => {
-  console.log(req.body);
   const { name, price, image, cat, quantity } = req.body;
   try {
     const newProduct = await Product.create({
