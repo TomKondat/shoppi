@@ -1,78 +1,55 @@
 const Product = require("./../models/productModel");
+const AppError = require("./../utils/AppError");
+const asyncHandler = require("express-async-handler");
 
-exports.getProductById = async (req, res) => {
+exports.getProductById = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  try {
-    const products = await Product.findById(id);
-    res.status(200).json({
-      status: "success",
-      products,
-    });
-  } catch (err) {
-    res.status(400).json({
-      status: "fail",
-      message: err.message,
-    });
-  }
-};
 
-exports.getProducts = async (req, res) => {
-  try {
-    const products = await Product.find();
-    res.status(200).json({
-      status: "success",
-      products,
-    });
-  } catch (err) {
-    res.status(400).json({
-      status: "fail",
-      message: err.message,
-    });
-  }
-};
+  const products = await Product.findById(id);
+  if (!products) return next(new AppError(400, "No product found"));
+  res.status(200).json({
+    status: "success",
+    products,
+  });
+});
 
-exports.createProduct = async (req, res) => {
+exports.getProducts = asyncHandler(async (req, res, next) => {
+  const products = await Product.find();
+  res.status(200).json({
+    status: "success",
+    products,
+  });
+});
+
+exports.createProduct = asyncHandler(async (req, res, next) => {
   const { name, price, image, cat, quantity } = req.body;
-  try {
-    const newProduct = await Product.create({
-      name,
-      price,
-      cat,
-      image,
-      quantity,
-    });
+  const newProduct = await Product.create({
+    name,
+    price,
+    cat,
+    image,
+    quantity,
+  });
 
-    res.status(201).json({
-      status: "success",
-      product: newProduct,
-    });
-  } catch (err) {
-    res.status(400).json({
-      status: "fail",
-      message: err.message,
-    });
-  }
-};
+  res.status(201).json({
+    status: "success",
+    product: newProduct,
+  });
+});
 
-exports.editProductById = async (req, res) => {
+exports.editProductById = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const { name, price } = req.body;
-  try {
-    const newProduct = await Product.findByIdAndUpdate(id, {
-      name,
-      price,
-    });
-    res.status(201).json({
-      status: "success",
-      newProduct,
-    });
-  } catch (err) {
-    res.status(400).json({
-      status: "fail",
-      message: err.message,
-    });
-  }
-};
+
+  const newProduct = await Product.findByIdAndUpdate(id, {
+    name,
+    price,
+  });
+  res.status(201).json({
+    status: "success",
+    newProduct,
+  });
+});
 
 exports.deleteProductById = (req, res) => {
   const { id } = req.params;
