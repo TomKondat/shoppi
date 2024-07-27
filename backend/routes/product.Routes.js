@@ -1,4 +1,5 @@
 const productControllers = require("./../controllers/productControllers");
+const authControllers = require("./../controllers/authControllers");
 
 const express = require("express");
 const router = express.Router();
@@ -6,7 +7,7 @@ const router = express.Router();
 router
   .route("/")
   .get(productControllers.getProducts)
-  .post(productControllers.createProduct);
+  .post(authControllers.protect, productControllers.createProduct);
 
 router
   .route("/:id")

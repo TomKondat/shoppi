@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
 const productsRouter = require("./routes/product.Routes");
 const usersRouter = require("./routes/user.Routes");
 const AppError = require("./utils/AppError");
@@ -9,6 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(cors());
+app.use(cookieParser());
 
 app.use("/api/shoppi/products", productsRouter);
 app.use("/api/shoppi/users", usersRouter);

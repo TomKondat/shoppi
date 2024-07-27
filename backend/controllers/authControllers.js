@@ -1,6 +1,8 @@
 const User = require("./../models/userModel");
-const asyncHandler = require("express-async-handler");
 const AppError = require("./../utils/AppError");
+const jwt = require("jsonwebtoken");
+const { promisify } = require("util");
+const asyncHandler = require("express-async-handler");
 
 exports.addNewUser = asyncHandler(async (req, res, next) => {
   const { username, email, age, password, confirmPassword } = req.body;
@@ -38,4 +40,48 @@ exports.login = asyncHandler(async (req, res, next) => {
     return next(new AppError(403, "Email or password is incorrect"));
   }
   // generate token
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+  res.cookie("jwt", token, {
+    httpOnly: true,
+    expires: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+    // secure: true,
+  });
+  // send token to client
+  res.status(200).json({
+    status: "success",
+    token,
+  });
+});
+
+exports.protect = asyncHandler(async (req, res, next) => {
+  //extract token from req.headers or cookies
+  console.log(req.cookies);
+  if (!req.cookies || !req.cookies.jwt)
+    return next(new AppError(403, "You are not logged in"));
+  const token = req.cookies.jwt;
+  console.log(token);
+
+  //verify token and extract payload data id
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  console.log(decoded);
+  if (!decoded || !decoded.exp >= Date.now() / 1000)
+    return next(new AppError(403, "Please login"));
+
+  //find user by id
+  const user = await User.findById(decoded.id);
+  if (!user) return next(new AppError(404, "Please login user"));
+
+  //upload user data to req object
+  req.user = user;
+
+  //check if user role is premium
+  if (req.user.role !== "premium" && req.user.role !== "admin")
+    return next(
+      new AppError(403, "Please upgrade to premium to access this feature")
+    );
+
+  //go to the next function
+  next();
 });
