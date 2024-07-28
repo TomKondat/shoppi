@@ -19,15 +19,29 @@
       </div>
     </div>
 
+    <div class="overlay" id="login-overlay">
+      <div class="modal" id="login-modal">
+        <button class="modal-close-btn" id="login-close-btn">x</button>
+        <form id="login-form">
+          <h2>Login</h2>
+          <input type="text" placeholder="Email" required />
+          <input type="password" placeholder="Password" required />
+          <button type="submit">Login</button>
+        </form>
+      </div>
+    </div>
     <header>
+      <button id="openLoginModal">Login</button>
+      <button id="openRegisterModal">Resiter</button>
+      <br />
       <form id="add-product">
         <input type="text" placeholder="Enter name" />
         <input type="text" placeholder="Enter price" />
         <select>
           <option disabled hidden>Select Category</option>
-          <option value="a">animals</option>
-          <option value="c">clothing</option>
-          <option value="f">food</option>
+          <option value="animals">animals</option>
+          <option value="clothing">clothing</option>
+          <option value="food">food</option>
         </select>
         <input type="text" placeholder="Enter image link" />
         <input type="submit" value="add product" />

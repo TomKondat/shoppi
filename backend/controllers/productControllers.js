@@ -23,17 +23,21 @@ exports.getProducts = asyncHandler(async (req, res, next) => {
 
 exports.createProduct = asyncHandler(async (req, res, next) => {
   const { name, price, image, cat, quantity } = req.body;
+  console.log(req.body);
+  console.log(`name: ${name}, price: ${price}, image: ${image}, cat: ${cat}`);
+
   const newProduct = await Product.create({
     name,
     price,
-    cat,
     image,
+    cat,
     quantity,
   });
+  console.log(newProduct);
 
   res.status(201).json({
     status: "success",
-    product: newProduct,
+    newProduct,
   });
 });
 

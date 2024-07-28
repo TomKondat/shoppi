@@ -5,13 +5,14 @@ const { promisify } = require("util");
 const asyncHandler = require("express-async-handler");
 
 exports.addNewUser = asyncHandler(async (req, res, next) => {
-  const { username, email, age, password, confirmPassword } = req.body;
-  if (!username || !email || !age || !password || !confirmPassword)
+  const { username, email, role, age, password, confirmPassword } = req.body;
+  if (!email || !password || !confirmPassword)
     return next(new AppError(403, "Please fill all the fields"));
 
   const newUser = await User.create({
     username,
     email,
+    role,
     age,
     password,
     confirmPassword,
@@ -45,8 +46,9 @@ exports.login = asyncHandler(async (req, res, next) => {
   });
   res.cookie("jwt", token, {
     httpOnly: true,
+    sameSite: "None",
     expires: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
-    // secure: true,
+    secure: true,
   });
   // send token to client
   res.status(200).json({
@@ -56,8 +58,10 @@ exports.login = asyncHandler(async (req, res, next) => {
 });
 
 exports.protect = asyncHandler(async (req, res, next) => {
-  //extract token from req.headers or cookies
   console.log(req.cookies);
+
+  console.log("protect");
+  //extract token from req.headers or cookies
   if (!req.cookies || !req.cookies.jwt)
     return next(new AppError(403, "You are not logged in"));
   const token = req.cookies.jwt;
@@ -75,7 +79,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
   //upload user data to req object
   req.user = user;
-
+  console.log(req.user);
   //check if user role is premium
   if (req.user.role !== "premium" && req.user.role !== "admin")
     return next(

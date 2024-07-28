@@ -7,10 +7,14 @@ const usersRouter = require("./routes/user.Routes");
 const AppError = require("./utils/AppError");
 const globalErrorHandler = require("./utils/errorHandler");
 const app = express();
+app.use(cookieParser());
 app.use(express.json());
 app.use(morgan("dev"));
-app.use(cors());
-app.use(cookieParser());
+const corsOptions = {
+  origin: "http://127.0.0.1:5500", // Your frontend's origin
+  credentials: true, // Allow credentials
+};
+app.use(cors(corsOptions));
 
 app.use("/api/shoppi/products", productsRouter);
 app.use("/api/shoppi/users", usersRouter);

@@ -1,4 +1,9 @@
-import { addNewProduct, editProduct, getProducts } from "./apiServices.js";
+import {
+  addNewProduct,
+  editProduct,
+  getProducts,
+  login,
+} from "./apiServices.js";
 
 const rootEl = document.getElementById("root");
 const searchBtn = document.querySelector("header div:nth-child(2) button");
@@ -7,6 +12,10 @@ const addProductForm = document.getElementById("add-product");
 const inputSearch = document.getElementById("inputSearch");
 const openModalBtn = document.getElementById("openModal");
 const closeModalBtn = document.querySelector(".modal-close-btn");
+const openLoginModalBtn = document.getElementById("openLoginModal");
+const loginOverlay = document.getElementById("login-overlay");
+const loginCloseBtn = document.getElementById("login-close-btn");
+const loginSubmit = document.getElementById("login-form");
 
 let shoppingCart = [];
 const handleAddProductToCart = (e) => {
@@ -167,11 +176,14 @@ const handleAddProduct = (e) => {
   const price = e.target.children[1].value;
   const cat = e.target.children[2].value;
   const image = e.target.children[3].value;
-  addNewProduct(name, price, cat, image).then(() => {
-    getProducts().then((products) =>
-      render(rootEl, products.products, createCardEl)
-    );
-  });
+  addNewProduct(name, price, cat, image)
+    .then((data) => {
+      console.log(data);
+      getProducts().then((products) =>
+        render(rootEl, products.products, createCardEl)
+      );
+    })
+    .catch((err) => console.log(err.message));
 };
 const addContent = (elToAppend, contentElToBeAdded) =>
   elToAppend.append(contentElToBeAdded);
@@ -224,6 +236,34 @@ const handleCloseModal = () => {
   }, 500);
 };
 
+const handleDisplayLoginModal = () => {
+  loginOverlay.style.display = "flex";
+};
+
+const handleLoginModalCloseBtn = () => {
+  loginOverlay.style.display = "none";
+};
+
+const handleLoginModalOverlay = (e) => {
+  if (e.target === loginOverlay) {
+    loginOverlay.style.display = "none";
+  }
+};
+
+const handleLoginSubmit = (e) => {
+  e.preventDefault();
+  const email = e.target.children[1].value;
+  const password = e.target.children[2].value;
+  login(email, password);
+  loginOverlay.style.display = "none";
+};
+
+// addNewProduct(name, price, cat, image).then(() => {
+//   getProducts().then((products) =>
+//     render(rootEl, products.products, createCardEl)
+//   );
+// });
+
 /* searchForm.addEventListener('submit', handleSearchOnSubmit)
  */ /* inputSearch.addEventListener('input', handleSearchOnInput) */
 /* searchBtn.addEventListener('click', handleSearchProducts) */
@@ -231,3 +271,7 @@ const handleCloseModal = () => {
 openModalBtn.addEventListener("click", handleShowModal);
 closeModalBtn.addEventListener("click", handleCloseModal);
 addProductForm.addEventListener("submit", handleAddProduct);
+openLoginModalBtn.addEventListener("click", handleDisplayLoginModal);
+loginCloseBtn.addEventListener("click", handleLoginModalCloseBtn);
+loginOverlay.addEventListener("click", handleLoginModalOverlay);
+loginSubmit.addEventListener("submit", handleLoginSubmit);
