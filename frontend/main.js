@@ -3,6 +3,7 @@ import {
   editProduct,
   getProducts,
   login,
+  register,
 } from "./apiServices.js";
 
 const rootEl = document.getElementById("root");
@@ -16,6 +17,12 @@ const openLoginModalBtn = document.getElementById("openLoginModal");
 const loginOverlay = document.getElementById("login-overlay");
 const loginCloseBtn = document.getElementById("login-close-btn");
 const loginSubmit = document.getElementById("login-form");
+const loginUsername = document.getElementById("login-username");
+
+const openRegisterModalBtn = document.getElementById("openRegisterModal");
+const registerOverlay = document.getElementById("register-overlay");
+const registerCloseBtn = document.getElementById("register-close-btn");
+const registerSubmit = document.getElementById("register-form");
 
 let shoppingCart = [];
 const handleAddProductToCart = (e) => {
@@ -252,10 +259,43 @@ const handleLoginModalOverlay = (e) => {
 
 const handleLoginSubmit = (e) => {
   e.preventDefault();
+  const username = e.target.children[3].value;
   const email = e.target.children[1].value;
   const password = e.target.children[2].value;
   login(email, password);
+  email.value = "";
+  password.value = "";
   loginOverlay.style.display = "none";
+};
+
+const handleDisplayRegisterModal = () => {
+  registerOverlay.style.display = "flex";
+};
+
+const handleRegisterModalCloseBtn = () => {
+  registerOverlay.style.display = "none";
+};
+
+const handleRegisterModalOverlay = (e) => {
+  if (e.target === registerOverlay) {
+    registerOverlay.style.display = "none";
+  }
+};
+
+const handleRegisterSubmit = (e) => {
+  e.preventDefault();
+  const username = e.target.children[1].value;
+  const email = e.target.children[2].value;
+  const age = e.target.children[3].value;
+  const password = e.target.children[4].value;
+  const confirmPassword = e.target.children[5].value;
+  register(username, email, age, password, confirmPassword);
+  username.value = "";
+  email.value = "";
+  age.value = "";
+  password.value = "";
+  confirmPassword.value = "";
+  registerOverlay.style.display = "none";
 };
 
 // addNewProduct(name, price, cat, image).then(() => {
@@ -275,3 +315,8 @@ openLoginModalBtn.addEventListener("click", handleDisplayLoginModal);
 loginCloseBtn.addEventListener("click", handleLoginModalCloseBtn);
 loginOverlay.addEventListener("click", handleLoginModalOverlay);
 loginSubmit.addEventListener("submit", handleLoginSubmit);
+
+openRegisterModalBtn.addEventListener("click", handleDisplayRegisterModal);
+registerCloseBtn.addEventListener("click", handleRegisterModalCloseBtn);
+registerOverlay.addEventListener("click", handleRegisterModalOverlay);
+registerSubmit.addEventListener("submit", handleRegisterSubmit);

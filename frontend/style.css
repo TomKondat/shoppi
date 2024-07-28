@@ -249,3 +249,28 @@ a {
 #login-form button:hover {
   background: #0056b3;
 }
+
+/*  */
+#register-form {
+  display: flex;
+  flex-direction: column;
+}
+
+#register-form input,
+#register-form button {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+#register-form button {
+  background: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#register-form button:hover {
+  background: #0056b3;
+}

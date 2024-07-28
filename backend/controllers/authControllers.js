@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
 const asyncHandler = require("express-async-handler");
 
-exports.addNewUser = asyncHandler(async (req, res, next) => {
+exports.register = asyncHandler(async (req, res, next) => {
   const { username, email, role, age, password, confirmPassword } = req.body;
   if (!email || !password || !confirmPassword)
     return next(new AppError(403, "Please fill all the fields"));

@@ -26,14 +26,32 @@
           <h2>Login</h2>
           <input type="text" placeholder="Email" required />
           <input type="password" placeholder="Password" required />
+
           <button type="submit">Login</button>
+          <button id="openRegisterModal">Resiter</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="overlay" id="register-overlay">
+      <div class="modal" id="register-modal">
+        <button class="modal-close-btn" id="register-close-btn">x</button>
+        <form id="register-form">
+          <h2>Register</h2>
+          <input type="text" placeholder="Username" />
+          <input type="text" placeholder="Email" required />
+          <input type="number" placeholder="Age" />
+          <input type="password" placeholder="Password" required />
+          <input type="password" placeholder="Confirm password" required />
+          <button type="submit">register</button>
         </form>
       </div>
     </div>
     <header>
-      <button id="openLoginModal">Login</button>
-      <button id="openRegisterModal">Resiter</button>
-      <br />
+      <div class="row">
+        <button id="openLoginModal">Login</button>
+        <h3 id="login-username"></h3>
+      </div>
       <form id="add-product">
         <input type="text" placeholder="Enter name" />
         <input type="text" placeholder="Enter price" />
