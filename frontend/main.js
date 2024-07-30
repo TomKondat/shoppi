@@ -259,12 +259,11 @@ const handleLoginModalOverlay = (e) => {
 
 const handleLoginSubmit = (e) => {
   e.preventDefault();
-  const username = e.target.children[3].value;
-  const email = e.target.children[1].value;
-  const password = e.target.children[2].value;
+  let email = e.target.children[1].value;
+  let password = e.target.children[2].value;
   login(email, password);
-  email.value = "";
-  password.value = "";
+  email = "";
+  password = "";
   loginOverlay.style.display = "none";
 };
 
@@ -284,17 +283,17 @@ const handleRegisterModalOverlay = (e) => {
 
 const handleRegisterSubmit = (e) => {
   e.preventDefault();
-  const username = e.target.children[1].value;
-  const email = e.target.children[2].value;
-  const age = e.target.children[3].value;
-  const password = e.target.children[4].value;
-  const confirmPassword = e.target.children[5].value;
+  let username = e.target.children[1].value;
+  let email = e.target.children[2].value;
+  let age = e.target.children[3].value;
+  let password = e.target.children[4].value;
+  let confirmPassword = e.target.children[5].value;
   register(username, email, age, password, confirmPassword);
-  username.value = "";
-  email.value = "";
-  age.value = "";
-  password.value = "";
-  confirmPassword.value = "";
+  username = "";
+  email = "";
+  age = "";
+  password = "";
+  confirmPassword = "";
   registerOverlay.style.display = "none";
 };
 

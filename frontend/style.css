@@ -274,3 +274,24 @@ a {
 #register-form button:hover {
   background: #0056b3;
 }
+
+.registerBtn {
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  align-items: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -25,10 +25,7 @@ exports.register = asyncHandler(async (req, res, next) => {
 
 exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
-  console.log(`email: ${email}, password: ${password}`);
   if (!email || !password) {
-    console.log(`email: ${email}, password: ${password}`);
-
     return next(new AppError(403, "Please provide email and password"));
   }
   //find user by email
