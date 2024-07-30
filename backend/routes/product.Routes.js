@@ -9,7 +9,7 @@ router
   .get(productControllers.getProducts)
   .post(
     authControllers.protect,
-    authControllers.restrictByPremuim,
+    authControllers.restrictBypremium,
     productControllers.createProduct
   );
 

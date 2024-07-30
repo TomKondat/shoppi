@@ -102,7 +102,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 });
 
 //spesific restriction
-exports.restrictByPremuim = (req, res, next) => {
+exports.restrictBypremium = (req, res, next) => {
   if (req.user.role != "premium")
     return next(
       new AppError(403, "You are not allowed to access this feature")
@@ -112,6 +112,8 @@ exports.restrictByPremuim = (req, res, next) => {
 
 //general restriction (buged!!!!)
 exports.restrictByRole = (...allowedRoles) => {
+  console.log(`allowedRoles: ${allowedRoles}`);
+
   return (req, res, next) => {
     if (!allowedRoles.includes(req.user.role))
       return next(
