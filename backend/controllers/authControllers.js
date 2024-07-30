@@ -1,8 +1,10 @@
 const User = require("./../models/userModel");
 const AppError = require("./../utils/AppError");
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
 const asyncHandler = require("express-async-handler");
+const sendEmail = require("./../utils/email");
 
 exports.register = asyncHandler(async (req, res, next) => {
   const { username, email, role, age, password, confirmPassword } = req.body;
@@ -54,6 +56,16 @@ exports.login = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.logout = asyncHandler(async (req, res, next) => {
+  res.clearCookie("jwt");
+  res.cookie("jwt", "", {
+    secure: true,
+    httpOnly: true,
+    sameSite: "None",
+    expires: new Date(0),
+  });
+});
+
 exports.protect = asyncHandler(async (req, res, next) => {
   console.log(req.cookies);
 
@@ -77,12 +89,82 @@ exports.protect = asyncHandler(async (req, res, next) => {
   //upload user data to req object
   req.user = user;
   console.log(req.user);
+
   //check if user role is premium
-  if (req.user.role !== "premium" && req.user.role !== "admin")
-    return next(
-      new AppError(403, "Please upgrade to premium to access this feature")
-    );
+
+  // if (req.user.role !== "premium" && req.user.role !== "admin")
+  //   return next(
+  //     new AppError(403, "Please upgrade to premium to access this feature")
+  //   );
 
   //go to the next function
   next();
+});
+
+//spesific restriction
+exports.restrictByPremuim = (req, res, next) => {
+  if (req.user.role != "premium")
+    return next(
+      new AppError(403, "You are not allowed to access this feature")
+    );
+  next();
+};
+
+//general restriction (buged!!!!)
+exports.restrictByRole = (...allowedRoles) => {
+  return (req, res, next) => {
+    if (!allowedRoles.includes(req.user.role))
+      return next(
+        new AppError(403, "You are not allowed to access this feature")
+      );
+    next();
+  };
+};
+
+//forgot password
+exports.forgotPassword = asyncHandler(async (req, res, next) => {
+  const { email } = req.body;
+  if (!email) return next(new AppError(401, "Please provide email"));
+
+  const user = await User.findOne({ email });
+  if (!user) return next(new AppError(404, "User not found"));
+
+  const resetToken = crypto.randomBytes(32).toString("hex");
+  console.log(resetToken);
+  const hashedPasswordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  user.passwordResetToken = hashedPasswordResetToken;
+  console.log(`user.passwordResetToken: ${user.passwordResetToken}`);
+  user.passwordResetExpires = Date.now() + 5 * 60 * 100;
+  await user.save({ validateBeforeSave: false });
+
+  const resetUrl = `${req.protocol}://${req.get(
+    "host"
+  )}/api/shoppi/users/resetPassword/${resetToken}`;
+  console.log(resetUrl);
+
+  //send email
+  const mailOptions = {
+    from: "Shoppi <donotreplay@shoppi.com",
+    to: user.email,
+    subject: "Reset your password",
+    text: `Follow this link: ${resetUrl}`,
+  };
+  try {
+    await sendEmail(mailOptions);
+    res.status(200).json({
+      status: "success",
+      message: "The password reset link has been sent to your email",
+    });
+  } catch (err) {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+    return next(
+      new AppError(401, "There was an error sending the email. Try again later")
+    );
+  }
 });

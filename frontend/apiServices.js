@@ -48,6 +48,20 @@ const login = async (email, password) => {
   }
 };
 
+const logout = async () => {
+  const config = {
+    withCredentials: true,
+    method: "post",
+  };
+  const url = `http://localhost:8000/api/shoppi/users/logout`;
+  try {
+    const res = await axios(url, config);
+    console.log(res);
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
 const register = async (username, email, age, password, confirmPassword) => {
   const config = {
     withCredentials: true,
@@ -63,4 +77,4 @@ const register = async (username, email, age, password, confirmPassword) => {
   }
 };
 
-export { getProducts, addNewProduct, editProduct, login, register };
+export { getProducts, addNewProduct, editProduct, login, register, logout };

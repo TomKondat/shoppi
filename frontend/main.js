@@ -4,6 +4,7 @@ import {
   getProducts,
   login,
   register,
+  logout,
 } from "./apiServices.js";
 
 const rootEl = document.getElementById("root");
@@ -18,6 +19,7 @@ const loginOverlay = document.getElementById("login-overlay");
 const loginCloseBtn = document.getElementById("login-close-btn");
 const loginSubmit = document.getElementById("login-form");
 const loginUsername = document.getElementById("login-username");
+const logoutBtn = document.getElementById("logoutBtn");
 
 const openRegisterModalBtn = document.getElementById("openRegisterModal");
 const registerOverlay = document.getElementById("register-overlay");
@@ -297,6 +299,10 @@ const handleRegisterSubmit = (e) => {
   registerOverlay.style.display = "none";
 };
 
+const handleLogout = () => {
+  logout();
+};
+
 // addNewProduct(name, price, cat, image).then(() => {
 //   getProducts().then((products) =>
 //     render(rootEl, products.products, createCardEl)
@@ -314,6 +320,7 @@ openLoginModalBtn.addEventListener("click", handleDisplayLoginModal);
 loginCloseBtn.addEventListener("click", handleLoginModalCloseBtn);
 loginOverlay.addEventListener("click", handleLoginModalOverlay);
 loginSubmit.addEventListener("submit", handleLoginSubmit);
+logoutBtn.addEventListener("click", handleLogout);
 
 openRegisterModalBtn.addEventListener("click", handleDisplayRegisterModal);
 registerCloseBtn.addEventListener("click", handleRegisterModalCloseBtn);
