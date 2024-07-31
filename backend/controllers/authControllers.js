@@ -70,32 +70,28 @@ exports.protect = asyncHandler(async (req, res, next) => {
   console.log(req.cookies);
 
   console.log("protect");
-  //extract token from req.headers or cookies
+  // 1 extract token from req.headers or cookies
   if (!req.cookies || !req.cookies.jwt)
     return next(new AppError(403, "You are not logged in"));
   const token = req.cookies.jwt;
   console.log(token);
 
-  //verify token and extract payload data id
+  // 2 verify token and extract payload data id
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   console.log(decoded);
   if (!decoded || !decoded.exp >= Date.now() / 1000)
     return next(new AppError(403, "Please login"));
 
-  //find user by id
+  // 3 find user by id
   const user = await User.findById(decoded.id);
   if (!user) return next(new AppError(404, "Please login user"));
 
-  //upload user data to req object
+  // 4 upload user data to req object
   req.user = user;
-  console.log(req.user);
+  if (user.passwordChangedAt > decoded.iat)
+    return next(new AppError(403, "Please login user"));
 
-  //check if user role is premium
-
-  // if (req.user.role !== "premium" && req.user.role !== "admin")
-  //   return next(
-  //     new AppError(403, "Please upgrade to premium to access this feature")
-  //   );
+  // 5 check if user role is premium
 
   //go to the next function
   next();
@@ -131,16 +127,17 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ email });
   if (!user) return next(new AppError(404, "User not found"));
 
-  const resetToken = crypto.randomBytes(32).toString("hex");
-  console.log(resetToken);
-  const hashedPasswordResetToken = crypto
-    .createHash("sha256")
-    .update(resetToken)
-    .digest("hex");
+  const resetToken = user.createPasswordResetToken();
+  // const resetToken = crypto.randomBytes(32).toString("hex");
+  // console.log(resetToken);
+  // const hashedPasswordResetToken = crypto
+  //   .createHash("sha256")
+  //   .update(resetToken)
+  //   .digest("hex");
 
-  user.passwordResetToken = hashedPasswordResetToken;
-  console.log(`user.passwordResetToken: ${user.passwordResetToken}`);
-  user.passwordResetExpires = Date.now() + 5 * 60 * 100;
+  // user.passwordResetToken = hashedPasswordResetToken;
+  // console.log(`user.passwordResetToken: ${user.passwordResetToken}`);
+  // user.passwordResetExpires = Date.now() + 5 * 60 * 100;
   await user.save({ validateBeforeSave: false });
 
   const resetUrl = `${req.protocol}://${req.get(
@@ -150,10 +147,10 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
   //send email
   const mailOptions = {
-    from: "Shoppi <donotreplay@shoppi.com",
+    from: "Shoppi <donotreplay@shoppi.com>",
     to: user.email,
     subject: "Reset your password",
-    text: `Follow this link: ${resetUrl}`,
+    text: `<h3>Please follow this link to reset your password </h3> <a href="${resetUrl}"> ${resetUrl}</a> `,
   };
   try {
     await sendEmail(mailOptions);
@@ -169,4 +166,41 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
       new AppError(401, "There was an error sending the email. Try again later")
     );
   }
+});
+
+exports.resetPassword = asyncHandler(async (req, res, next) => {
+  const { password, confirmPassword } = req.body;
+  const { plainResetToken } = req.params;
+  if (!password || !confirmPassword || !plainResetToken)
+    return next(new AppError(401, "Please fill all the fields"));
+
+  //encrypt plain token to match with the reset token in the database
+
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(plainResetToken)
+    .digest("hex");
+
+  //find user by token
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gte: Date.now() },
+  }).select("+password");
+  if (!user) return next(new AppError(400, "Token is invalid or has expired"));
+
+  //update password
+  user.password = password;
+  user.confirmPassword = confirmPassword;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  user.passwordChangedAt = Date.now();
+
+  //save user
+  await user.save();
+  res.status(200).json({
+    status: "success",
+    message: "Password has been reset",
+  });
+
+  //delete token
 });
