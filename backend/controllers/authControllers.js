@@ -150,7 +150,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     from: "Shoppi <donotreplay@shoppi.com>",
     to: user.email,
     subject: "Reset your password",
-    text: `<h3>Please follow this link to reset your password </h3> <a href="${resetUrl}"> ${resetUrl}</a> `,
+    text: `<h3>Please follow this link to reset your password </h3> <a href="${resetUrl}"> ${resetUrl}</a> \n${resetToken}`,
   };
   try {
     await sendEmail(mailOptions);
@@ -184,9 +184,9 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   //find user by token
   const user = await User.findOne({
     passwordResetToken: hashedToken,
-    passwordResetExpires: { $gte: Date.now() },
   }).select("+password");
-  if (!user) return next(new AppError(400, "Token is invalid or has expired"));
+  if (!user || user.passwordResetExpires < Date.now())
+    return next(new AppError(400, "Token is invalid or has expired"));
 
   //update password
   user.password = password;

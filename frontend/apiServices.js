@@ -77,4 +77,41 @@ const register = async (username, email, age, password, confirmPassword) => {
   }
 };
 
-export { getProducts, addNewProduct, editProduct, login, register, logout };
+const forgotPassword = async (email) => {
+  const config = {
+    method: "post",
+    data: { email },
+  };
+  const url = `http://localhost:8000/api/shoppi/users/forgotPassword`;
+  try {
+    const res = await axios(url, config);
+    console.log(res);
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+const resetPassword = async (token, password, confirmPassword) => {
+  const config = {
+    method: "post",
+    data: { password, confirmPassword },
+  };
+  const url = `http://localhost:8000/api/shoppi/users/resetPassword/${token}`;
+  try {
+    const res = await axios(url, config);
+    console.log(res);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export {
+  getProducts,
+  addNewProduct,
+  editProduct,
+  login,
+  register,
+  logout,
+  forgotPassword,
+  resetPassword,
+};

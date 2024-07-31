@@ -30,9 +30,20 @@
           <button type="submit">Login</button>
         </form>
         <hr />
-        <div class="flex-center">
-          <button id="openRegisterModal" class="registerBtn">Resiter</button>
-        </div>
+        <button id="openRegisterModal" class="registerBtn">Resiter</button>
+
+        <form id="forgot-form">
+          <h2>Forgot Password?</h2>
+          <input type="text" placeholder="Email" required />
+          <button type="submit" class="forgotPasswordBtn">Click here!</button>
+        </form>
+        <hr />
+        <form id="reset-password" hidden>
+          <input type="text" placeholder="token" required />
+          <input type="password" placeholder="password" required />
+          <input type="password" placeholder="confirm password" required />
+          <button type="submit" class="forgotPasswordBtn">Reset</button>
+        </form>
       </div>
     </div>
 
@@ -50,6 +61,7 @@
         </form>
       </div>
     </div>
+
     <header>
       <div class="row">
         <button id="openLoginModal">Login</button>

@@ -5,6 +5,8 @@ import {
   login,
   register,
   logout,
+  forgotPassword,
+  resetPassword,
 } from "./apiServices.js";
 
 const rootEl = document.getElementById("root");
@@ -25,6 +27,8 @@ const openRegisterModalBtn = document.getElementById("openRegisterModal");
 const registerOverlay = document.getElementById("register-overlay");
 const registerCloseBtn = document.getElementById("register-close-btn");
 const registerSubmit = document.getElementById("register-form");
+const forgotPasswordBtn = document.getElementById("forgot-form");
+const resetPasswordForm = document.getElementById("reset-password");
 
 let shoppingCart = [];
 const handleAddProductToCart = (e) => {
@@ -303,6 +307,26 @@ const handleLogout = () => {
   logout();
 };
 
+const handleForgotPassword = (e) => {
+  e.preventDefault();
+  resetPasswordForm.style.display = "block";
+  let email = e.target.children[1].value;
+  console.log(`email: ${email}`);
+  forgotPassword(email);
+};
+
+const handleResetPassowrd = (e) => {
+  e.preventDefault();
+  resetPasswordForm.style.display = "none";
+  let token = e.target.children[0].value;
+  let password = e.target.children[1].value;
+  let confirmPassword = e.target.children[2].value;
+  console.log(
+    `token: ${token} password: ${password} confirmPassword: ${confirmPassword}`
+  );
+  resetPassword(token, password, confirmPassword);
+};
+
 // addNewProduct(name, price, cat, image).then(() => {
 //   getProducts().then((products) =>
 //     render(rootEl, products.products, createCardEl)
@@ -321,8 +345,9 @@ loginCloseBtn.addEventListener("click", handleLoginModalCloseBtn);
 loginOverlay.addEventListener("click", handleLoginModalOverlay);
 loginSubmit.addEventListener("submit", handleLoginSubmit);
 logoutBtn.addEventListener("click", handleLogout);
-
 openRegisterModalBtn.addEventListener("click", handleDisplayRegisterModal);
 registerCloseBtn.addEventListener("click", handleRegisterModalCloseBtn);
 registerOverlay.addEventListener("click", handleRegisterModalOverlay);
 registerSubmit.addEventListener("submit", handleRegisterSubmit);
+forgotPasswordBtn.addEventListener("submit", handleForgotPassword);
+resetPasswordForm.addEventListener("submit", handleResetPassowrd);
