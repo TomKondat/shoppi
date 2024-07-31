@@ -9,7 +9,7 @@ router
   .get(productControllers.getProducts)
   .post(
     authControllers.protect,
-    authControllers.restrictBypremium,
+    authControllers.restrictByRole("premium", "admin"),
     productControllers.createProduct
   );
 
