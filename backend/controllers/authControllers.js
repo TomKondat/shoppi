@@ -57,13 +57,13 @@ exports.login = asyncHandler(async (req, res, next) => {
 });
 
 exports.logout = asyncHandler(async (req, res, next) => {
-  res.clearCookie("jwt");
-  res.cookie("jwt", "", {
-    secure: true,
+  res.cookie("jwt", "loggedout", {
     httpOnly: true,
     sameSite: "None",
-    expires: new Date(0),
+    expires: new Date(0), // Set expiration date to a time in the past
+    secure: true,
   });
+  res.status(200).json({ status: "success" });
 });
 
 exports.protect = asyncHandler(async (req, res, next) => {

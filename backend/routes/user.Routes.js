@@ -12,7 +12,7 @@ router.route("/login").post(authControllers.login);
 router.post("/forgotPassword", authControllers.forgotPassword);
 router.post("/resetPassword/:plainResetToken", authControllers.resetPassword);
 
-router.route("/logout").post(authControllers.logout);
+router.route("/logout").delete(authControllers.logout);
 router.route("/:id").get(userControllers.getUserById);
 
 module.exports = router;

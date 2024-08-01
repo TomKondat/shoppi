@@ -268,6 +268,7 @@ const handleLoginSubmit = (e) => {
   let email = e.target.children[1].value;
   let password = e.target.children[2].value;
   login(email, password);
+  logoutBtn.disabled = false;
   email = "";
   password = "";
   loginOverlay.style.display = "none";
@@ -305,6 +306,7 @@ const handleRegisterSubmit = (e) => {
 
 const handleLogout = () => {
   logout();
+  logoutBtn.disabled = true;
 };
 
 const handleForgotPassword = (e) => {

@@ -51,11 +51,12 @@ const login = async (email, password) => {
 const logout = async () => {
   const config = {
     withCredentials: true,
-    method: "post",
+    method: "delete",
   };
   const url = `http://localhost:8000/api/shoppi/users/logout`;
   try {
     const res = await axios(url, config);
+    if (res.data.status === "success") alert("Logged out successfully");
     console.log(res);
   } catch (err) {
     console.log(err.message);
