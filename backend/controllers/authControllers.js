@@ -84,12 +84,12 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
   // 3 find user by id
   const user = await User.findById(decoded.id);
-  if (!user) return next(new AppError(404, "Please login user"));
+  if (!user) return next(new AppError(404, "Please login user1"));
 
   // 4 upload user data to req object
   req.user = user;
-  if (user.passwordChangedAt > decoded.iat)
-    return next(new AppError(403, "Please login user"));
+  if (Date.parse(user.passwordChangedAt) / 1000 > decoded.iat)
+    return next(new AppError(403, "Please login again"));
 
   // 5 check if user role is premium
 

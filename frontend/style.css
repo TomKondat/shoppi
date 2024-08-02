@@ -289,6 +289,28 @@ a {
   align-items: center;
   justify-content: center;
 }
+.logoutBtn {
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+.loginBtn ::after {
+}
+.loginBtn {
+  background: linear-gradient(to right, #10b38a, #049c71);
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
 
 .forgotPasswordBtn {
   background: linear-gradient(to right, #5148f9, #2bbfff);

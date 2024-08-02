@@ -188,7 +188,8 @@ const handleAddProduct = (e) => {
   const name = e.target.children[0].value;
   const price = e.target.children[1].value;
   const cat = e.target.children[2].value;
-  const image = e.target.children[3].value;
+  const image =
+    e.target.children[3].value == "" ? undefined : e.target.children[3].value;
   addNewProduct(name, price, cat, image)
     .then((data) => {
       console.log(data);
