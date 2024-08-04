@@ -10,6 +10,17 @@ const productSchema = new mongoose.Schema({
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsNGGjrfSqqv8UjL18xS4YypbK-q7po_8oVQ&s",
   },
   quantity: { type: Number, min: [0, "Minimum must be 0 or above"], deault: 0 },
+  feedbacks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Feedback",
+    },
+  ],
+});
+
+productSchema.pre(/^findOne/, function (next) {
+  this.populate("feedbacks");
+  next();
 });
 
 const Product = mongoose.model("Product", productSchema);
