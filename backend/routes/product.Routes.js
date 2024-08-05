@@ -1,8 +1,10 @@
 const productControllers = require("./../controllers/productControllers");
 const authControllers = require("./../controllers/authControllers");
+const feedbacskRouter = require("./feedback.Routes");
 
 const express = require("express");
 const router = express.Router();
+router.use("/:productId/feedbacks", feedbacskRouter);
 
 router
   .route("/")

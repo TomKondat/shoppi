@@ -1,10 +1,11 @@
 const express = require("express");
 const feedbackControllers = require("../controllers/feedbackControllers");
-const router = express.Router();
+const authControllers = require("../controllers/authControllers");
+const router = express.Router({ mergeParams: true });
 
 router
   .route("/")
-  .post(feedbackControllers.createFeedback)
-  .get(feedbackControllers.getAllFeedbacks);
+  .post(authControllers.protect, feedbackControllers.createFeedback)
+  .get(feedbackControllers.getFeedbacksByProductId);
 
 module.exports = router;

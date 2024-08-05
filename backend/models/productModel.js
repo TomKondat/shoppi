@@ -28,7 +28,7 @@ productSchema.virtual("feedbacks", {
   localField: "_id",
 });
 
-productSchema.pre(/^findOne/, function (next) {
+productSchema.pre(/^find/, function (next) {
   this.populate("feedbacks");
   next();
 });
