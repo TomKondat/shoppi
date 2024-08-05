@@ -10,6 +10,11 @@ const feedbackSchema = new mongoose.Schema({
     type: String,
     maxLength: 300,
   },
+  product: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Product",
+    required: [true, "Feedback must have a product"],
+  },
   author: {
     type: mongoose.Schema.ObjectId,
     ref: "User",

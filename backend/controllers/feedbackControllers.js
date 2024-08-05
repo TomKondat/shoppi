@@ -6,15 +6,15 @@ const asyncHandler = require("express-async-handler");
 exports.createFeedback = asyncHandler(async (req, res, next) => {
   const { productId, rating, review, author } = req.body;
 
-  const newFeedback = await Feedback.create({ rating, review, author });
-  const product = await Product.findById(productId);
-
-  product.feedbacks.push(newFeedback._id);
-  product.save({ validateBeforeSave: false });
+  const newFeedback = await Feedback.create({
+    rating,
+    review,
+    author,
+    product: productId,
+  });
   res.status(201).json({
     status: "success",
     newFeedback,
-    product,
   });
 });
 
