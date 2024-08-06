@@ -21,19 +21,27 @@ exports.createFeedback = asyncHandler(async (req, res, next) => {
 });
 
 exports.getFeedbacksByProductId = asyncHandler(async (req, res, next) => {
-  const { createdAt } = req.body;
   const { productId } = req.params;
-
-  const filterQueryObj = { ...req.query };
-
-  delete filterQueryObj["sort"];
-  let queryStr = JSON.stringify(filterQueryObj);
-  let query = Feedback.find(JSON.parse(queryStr));
-  query = query.sort("-createdAt");
-  const feedbacks = await query;
-  console.log(`feedback: ${feedbacks}`);
+  const feedbacks = await Feedback.find({ product: productId });
   res.status(200).json({
     status: "success",
     feedbacks,
   });
 });
+
+//--nati
+// exports.getFeedbacksByProductId = asyncHandler(async (req, res, next) => {
+//   const { productId } = req.params;
+//   const { sort } = req.query;
+
+//   // Default sorting: createdAt descending if no sort query is provided
+//   const sortOption = sort ? { [sort]: 1 } : { createdAt: -1 };
+
+//   const feedbacks = await Feedback.find({ product: productId }).sort(
+//     sortOption
+//   );
+//   res.status(201).json({
+//     status: "success",
+//     feedbacks,
+//   });
+// });

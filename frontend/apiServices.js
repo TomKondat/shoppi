@@ -21,6 +21,20 @@ const getFeedbacksByProductId = async (productId) => {
   return data;
 };
 
+const addNewFeedback = async (productId, rating, review) => {
+  const config = {
+    data: { productId, rating, review },
+    withCredentials: true,
+    method: "post",
+  };
+  const url = `http://localhost:8000/api/shoppi/feedbacks`;
+
+  const { data } = await axios(url, config);
+  console.log(data);
+
+  return data;
+};
+
 const addNewProduct = async (name, price, cat, image) => {
   const config = {
     data: { name, price, cat, image },
@@ -130,4 +144,5 @@ export {
   forgotPassword,
   resetPassword,
   getFeedbacksByProductId,
+  addNewFeedback,
 };

@@ -8,6 +8,7 @@ import {
   forgotPassword,
   resetPassword,
   getFeedbacksByProductId,
+  addNewFeedback,
 } from "./apiServices.js";
 
 const rootEl = document.getElementById("root");
@@ -78,12 +79,34 @@ const createFeedbackEl = (feedback) => {
 const handleToggleFeedback = (e) => {
   const id = e.target.id.split("_")[1];
   const feedbackDivEl = document.getElementById(`feedbackDiv_${id}`);
+  console.log(id);
+  console.log(feedbackDivEl);
   getFeedbacksByProductId(id).then((feedbacks) => {
+    console.log(feedbacks.feedbacks);
     render(feedbackDivEl, feedbacks.feedbacks, createFeedbackEl);
   });
   if (e.target.parentElement.children[5].style.display == "block")
     e.target.parentElement.children[5].style.display = "none";
   else e.target.parentElement.children[5].style.display = "block";
+};
+
+const handleAddNewFeedback = (e) => {
+  e.preventDefault();
+  const productId = e.target.id.split("_")[1];
+  const feedback = e.target.children[0].value;
+  const rating = e.target.children[1].value;
+
+  addNewFeedback(productId, rating, feedback).then(() => {
+    getFeedbacksByProductId(productId).then((feedbacks) => {
+      render(
+        document.getElementById(`feedbackDiv_${productId}`),
+        feedbacks.feedbacks,
+        createFeedbackEl
+      );
+    });
+  });
+  e.target.children[0].value = "";
+  e.target.children[1].value = "";
 };
 
 const handleSubmitEditProduct = (e) => {
@@ -147,19 +170,41 @@ const createCardEl = (productObj) => {
   addToCartBtn.innerHTML = `Buy ${productObj.name} Now!`;
   addToCartBtn.addEventListener("click", handleAddProductToCart);
 
+  //form for adding feedback
+  const addFeedbackFormEl = document.createElement("form");
+  addFeedbackFormEl.id = `addFeedbackForm_${productObj._id}`;
+  addFeedbackFormEl.addEventListener("submit", handleAddNewFeedback);
+
+  const addFeedbackInputEl = document.createElement("input");
+  addFeedbackInputEl.placeholder = "Add feeback";
+  addFeedbackInputEl.type = "text";
+  addFeedbackFormEl.append(addFeedbackInputEl);
+
+  const addRatingInputEl = document.createElement("input");
+  addRatingInputEl.placeholder = "Add rating";
+  addRatingInputEl.type = "number";
+  addFeedbackFormEl.append(addRatingInputEl);
+
+  const submitFeedbackInputEl = document.createElement("input");
+  submitFeedbackInputEl.value = "Add Feedback";
+  submitFeedbackInputEl.type = "submit";
+  addFeedbackFormEl.append(submitFeedbackInputEl);
+
+  //form end
+
   const feedbackBtnEl = document.createElement("button");
   feedbackBtnEl.id = `feedback_${productObj._id}`;
-  feedbackBtnEl.innerHTML = "feedback";
+  feedbackBtnEl.innerHTML = "Feedbacks";
   feedbackBtnEl.className = "feedbacks-btn";
   feedbackBtnEl.addEventListener("click", handleToggleFeedback);
   cardEl.append(feedbackBtnEl);
-
   const feedbackDivEl = document.createElement("div");
   feedbackDivEl.id = `feedbackDiv_${productObj._id}`;
   feedbackDivEl.style.display = "none";
 
   cardEl.append(feedbackDivEl);
   cardEl.append(addToCartBtn);
+  cardEl.append(addFeedbackFormEl);
   cardEl.prepend(editBtnEl);
   return cardEl;
 };
