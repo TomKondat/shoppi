@@ -67,7 +67,7 @@ exports.logout = asyncHandler(async (req, res, next) => {
 });
 
 exports.protect = asyncHandler(async (req, res, next) => {
-  console.log(req.cookies);
+  console.log(`req.cookies: ${req.cookies}`);
 
   console.log("protect");
   // 1 extract token from req.headers or cookies
@@ -95,6 +95,12 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
   //go to the next function
   next();
+});
+
+exports.isLoggedin = asyncHandler(async (req, res, next) => {
+  if (!req.cookies || !req.cookies.jwt)
+    return next(new AppError(403, "You are not logged in"));
+  this.protect(req, res, next);
 });
 
 //spesific restriction

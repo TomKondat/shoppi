@@ -4,7 +4,7 @@ const AppError = require("./../utils/AppError");
 const asyncHandler = require("express-async-handler");
 
 exports.createFeedback = asyncHandler(async (req, res, next) => {
-  const { productId, rating, review } = req.body;
+  const { productId, rating, review, createDateAt } = req.body;
   const author = req.body.author || req.user._id;
   if (!author) return next(new AppError("The author is not defined", 401));
   const newFeedback = await Feedback.create({
@@ -12,6 +12,7 @@ exports.createFeedback = asyncHandler(async (req, res, next) => {
     review,
     author,
     product: productId,
+    createDateAt,
   });
   res.status(201).json({
     status: "success",
@@ -19,17 +20,18 @@ exports.createFeedback = asyncHandler(async (req, res, next) => {
   });
 });
 
-// exports.getAllFeedbacks = asyncHandler(async (req, res, next) => {
-//   const feedbacks = await Feedback.find();
-//   res.status(200).json({
-//     status: "success",
-//     feedbacks,
-//   });
-// });
-
 exports.getFeedbacksByProductId = asyncHandler(async (req, res, next) => {
+  const { createdAt } = req.body;
   const { productId } = req.params;
-  const feedbacks = await Feedback.find({ product: productId });
+
+  const filterQueryObj = { ...req.query };
+
+  delete filterQueryObj["sort"];
+  let queryStr = JSON.stringify(filterQueryObj);
+  let query = Feedback.find(JSON.parse(queryStr));
+  query = query.sort("-createdAt");
+  const feedbacks = await query;
+  console.log(`feedback: ${feedbacks}`);
   res.status(200).json({
     status: "success",
     feedbacks,

@@ -20,6 +20,10 @@ const feedbackSchema = new mongoose.Schema({
     ref: "User",
     required: [true, "Feedback must have an author"],
   },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
 });
 
 feedbackSchema.pre(/^find/, function (next) {

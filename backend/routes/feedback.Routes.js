@@ -6,6 +6,13 @@ const router = express.Router({ mergeParams: true });
 router
   .route("/")
   .post(authControllers.protect, feedbackControllers.createFeedback)
-  .get(feedbackControllers.getFeedbacksByProductId);
+  .get(
+    authControllers.protect,
+    (req, res, next) => {
+      console.log("chipopi");
+      next();
+    },
+    feedbackControllers.getFeedbacksByProductId
+  );
 
 module.exports = router;

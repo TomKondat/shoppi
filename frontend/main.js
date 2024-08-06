@@ -7,6 +7,7 @@ import {
   logout,
   forgotPassword,
   resetPassword,
+  getFeedbacksByProductId,
 } from "./apiServices.js";
 
 const rootEl = document.getElementById("root");
@@ -59,6 +60,32 @@ const handleToggleEditMode = (e) => {
     e.target.parentElement.children[3].style.display = "none";
   else e.target.parentElement.children[3].style.display = "flex";
 };
+const createFeedbackEl = (feedback) => {
+  const feedbackEl = document.createElement("div");
+  feedbackEl.className = "feedback";
+  const feedbackDate = new Date(feedback.createdAt).toLocaleString("en-US", {
+    hour12: false,
+  });
+
+  feedbackEl.innerHTML = `
+  <div >
+    <p><strong>${feedback.author.username} </strong>: ${feedback.review}(Rating ${feedback.rating}).</p>
+      <p><strong>Posted at: </strong>: ${feedbackDate}</p>
+  </div>
+  `;
+  return feedbackEl;
+};
+const handleToggleFeedback = (e) => {
+  const id = e.target.id.split("_")[1];
+  const feedbackDivEl = document.getElementById(`feedbackDiv_${id}`);
+  getFeedbacksByProductId(id).then((feedbacks) => {
+    render(feedbackDivEl, feedbacks.feedbacks, createFeedbackEl);
+  });
+  if (e.target.parentElement.children[5].style.display == "block")
+    e.target.parentElement.children[5].style.display = "none";
+  else e.target.parentElement.children[5].style.display = "block";
+};
+
 const handleSubmitEditProduct = (e) => {
   e.preventDefault();
   console.log(e.target.id);
@@ -91,8 +118,7 @@ const createCardEl = (productObj) => {
   cardEl.append(imgEl);
   cardEl.innerHTML += `<div class="card-body">
          <h5 class="card-title">${productObj.name}</h5>
-        <p class="card-text">Price ${productObj.price}</p>
-       
+        <p class="card-text">Price ${productObj.price}</p>      
        </div>`;
   const editFormEl = document.createElement("form");
   editFormEl.id = `edit_form_${productObj._id}`;
@@ -120,6 +146,19 @@ const createCardEl = (productObj) => {
   addToCartBtn.id = `btn_${productObj._id}`;
   addToCartBtn.innerHTML = `Buy ${productObj.name} Now!`;
   addToCartBtn.addEventListener("click", handleAddProductToCart);
+
+  const feedbackBtnEl = document.createElement("button");
+  feedbackBtnEl.id = `feedback_${productObj._id}`;
+  feedbackBtnEl.innerHTML = "feedback";
+  feedbackBtnEl.className = "feedbacks-btn";
+  feedbackBtnEl.addEventListener("click", handleToggleFeedback);
+  cardEl.append(feedbackBtnEl);
+
+  const feedbackDivEl = document.createElement("div");
+  feedbackDivEl.id = `feedbackDiv_${productObj._id}`;
+  feedbackDivEl.style.display = "none";
+
+  cardEl.append(feedbackDivEl);
   cardEl.append(addToCartBtn);
   cardEl.prepend(editBtnEl);
   return cardEl;
@@ -269,7 +308,6 @@ const handleLoginSubmit = (e) => {
   let email = e.target.children[1].value;
   let password = e.target.children[2].value;
   login(email, password);
-  logoutBtn.disabled = false;
   email = "";
   password = "";
   loginOverlay.style.display = "none";
@@ -307,7 +345,9 @@ const handleRegisterSubmit = (e) => {
 
 const handleLogout = () => {
   logout();
-  logoutBtn.disabled = true;
+  getProducts().then((products) =>
+    render(rootEl, products.products, createCardEl)
+  );
 };
 
 const handleForgotPassword = (e) => {
