@@ -1,3 +1,4 @@
+const APIMmethods = require("../utils/APImethods");
 const Product = require("./../models/productModel");
 const AppError = require("./../utils/AppError");
 const asyncHandler = require("express-async-handler");
@@ -14,7 +15,10 @@ exports.getProductById = asyncHandler(async (req, res, next) => {
 });
 
 exports.getProducts = asyncHandler(async (req, res, next) => {
-  const products = await Product.find();
+  const apiMethods = new APIMmethods(Product.find(), req.query);
+  apiMethods.filter().sort().selectFields().makePagination();
+
+  const products = await apiMethods.query;
   res.status(200).json({
     status: "success",
     products,
@@ -54,7 +58,6 @@ exports.editProductById = asyncHandler(async (req, res, next) => {
     newProduct,
   });
 });
-
 exports.deleteProductById = (req, res) => {
   const { id } = req.params;
   if (id) {

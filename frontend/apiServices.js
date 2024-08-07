@@ -1,5 +1,5 @@
-const getProducts = async () => {
-  const url = `http://localhost:8000/api/shoppi/products`;
+const getProducts = async (query = "") => {
+  const url = `http://localhost:8000/api/shoppi/products/${query}`;
   try {
     const { data } = await axios.get(url);
     return data;
