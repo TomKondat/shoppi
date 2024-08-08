@@ -1,21 +1,8 @@
 const User = require("./../models/userModel");
 const asyncHandler = require("express-async-handler");
 const AppError = require("./../utils/AppError");
+const factory = require("./factoryHandlers");
 
-exports.getUsers = asyncHandler(async (req, res, next) => {
-  const users = await User.find();
-  res.status(201).json({
-    status: "success",
-    users,
-  });
-});
+exports.getUsers = factory.getAll(User);
 
-exports.getUserById = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-
-  const users = await User.findById(id);
-  res.status(200).json({
-    status: "success",
-    users,
-  });
-});
+exports.getUserById = factory.getOne(User);
