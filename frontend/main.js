@@ -136,7 +136,7 @@ const createCardEl = (productObj) => {
   editBtnEl.addEventListener("click", handleToggleEditMode);
 
   const imgEl = document.createElement("img");
-  imgEl.src = productObj.image;
+  imgEl.src = `http://127.0.0.1:8000/${productObj.image}`;
   imgEl.alt = productObj.name;
   cardEl.append(imgEl);
   cardEl.innerHTML += `<div class="card-body">
@@ -273,7 +273,9 @@ const handleAddProduct = (e) => {
   const price = e.target.children[1].value;
   const cat = e.target.children[2].value;
   const image =
-    e.target.children[3].value == "" ? undefined : e.target.children[3].value;
+    e.target.children[3].files[0] == ""
+      ? undefined
+      : e.target.children[3].files[0];
   addNewProduct(name, price, cat, image)
     .then((data) => {
       console.log(data);

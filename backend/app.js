@@ -16,7 +16,7 @@ const corsOptions = {
   credentials: true, // Allow credentials
 };
 app.use(cors(corsOptions));
-
+app.use(express.static("public"));
 app.use("/api/shoppi/products", productsRouter);
 app.use("/api/shoppi/users", usersRouter);
 app.use("/api/shoppi/feedbacks", feedbacskRouter);

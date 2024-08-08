@@ -6,14 +6,13 @@ const express = require("express");
 const router = express.Router();
 router.use("/:productId/feedbacks", feedbacskRouter);
 
-router
-  .route("/")
-  .get(productControllers.getProducts)
-  .post(
-    authControllers.protect,
-    authControllers.restrictByRole("premium", "admin"),
-    productControllers.createProduct
-  );
+router.route("/").get(productControllers.getProducts).post(
+  authControllers.protect,
+  authControllers.restrictByRole("premium", "admin"),
+  productControllers.uploadProductImage,
+  // productControllers.editAndResizeImage,
+  productControllers.createProduct
+);
 
 router
   .route("/:id")

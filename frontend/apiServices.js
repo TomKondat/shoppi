@@ -36,16 +36,24 @@ const addNewFeedback = async (productId, rating, review) => {
 };
 
 const addNewProduct = async (name, price, cat, image) => {
+  const formData = new FormData();
+  formData.append("name", name);
+  formData.append("price", price);
+  formData.append("cat", cat);
+  if (image) {
+    formData.append("image", image);
+  }
   const config = {
-    data: { name, price, cat, image },
+    data: formData,
     withCredentials: true,
     method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   };
   const url = `http://localhost:8000/api/shoppi/products`;
-
   const { data } = await axios(url, config);
   console.log(data);
-
   return data;
 };
 const editProduct = async (id, name, price) => {

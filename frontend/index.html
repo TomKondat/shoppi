@@ -67,7 +67,7 @@
         <button id="openLoginModal" class="loginBtn">Login</button>
         <button id="logoutBtn" class="logoutBtn">Logout</button>
       </div>
-      <form id="add-product">
+      <form id="add-product" enctype="multipart/form-data">
         <input type="text" placeholder="Enter name" />
         <input type="text" placeholder="Enter price" />
         <select>
@@ -76,7 +76,7 @@
           <option value="clothing">clothing</option>
           <option value="food">food</option>
         </select>
-        <input type="text" placeholder="Enter image link" />
+        <input type="file" />
         <input type="submit" value="add product" />
       </form>
       <div>
