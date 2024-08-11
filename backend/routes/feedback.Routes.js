@@ -5,14 +5,14 @@ const router = express.Router({ mergeParams: true });
 
 router
   .route("/")
-  .post(authControllers.protect, feedbackControllers.createFeedback)
-  .get(
+  .post(
     authControllers.protect,
     (req, res, next) => {
-      console.log("chipopi");
+      req.body.author = req.user._id;
       next();
     },
-    feedbackControllers.getFeedbacksByProductId
-  );
+    feedbackControllers.createFeedback
+  )
+  .get(authControllers.protect, feedbackControllers.getFeedbacksByProductId);
 
 module.exports = router;

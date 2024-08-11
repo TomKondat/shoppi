@@ -23,7 +23,7 @@ const getFeedbacksByProductId = async (productId) => {
 
 const addNewFeedback = async (productId, rating, review) => {
   const config = {
-    data: { productId, rating, review },
+    data: { product: productId, rating, review },
     withCredentials: true,
     method: "post",
   };

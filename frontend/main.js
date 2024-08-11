@@ -82,8 +82,8 @@ const handleToggleFeedback = (e) => {
   console.log(id);
   console.log(feedbackDivEl);
   getFeedbacksByProductId(id).then((feedbacks) => {
-    console.log(feedbacks.feedbacks);
-    render(feedbackDivEl, feedbacks.feedbacks, createFeedbackEl);
+    console.log(feedbacks);
+    render(feedbackDivEl, feedbacks.docs, createFeedbackEl);
   });
   if (e.target.parentElement.children[5].style.display == "block")
     e.target.parentElement.children[5].style.display = "none";
@@ -96,11 +96,16 @@ const handleAddNewFeedback = (e) => {
   const feedback = e.target.children[0].value;
   const rating = e.target.children[1].value;
 
-  addNewFeedback(productId, rating, feedback).then(() => {
+  console.log(
+    `productId: ${productId} feedback: ${feedback} rating: ${rating}`
+  );
+
+  addNewFeedback(productId, rating, feedback).then((data) => {
+    console.log(data);
     getFeedbacksByProductId(productId).then((feedbacks) => {
       render(
         document.getElementById(`feedbackDiv_${productId}`),
-        feedbacks.feedbacks,
+        feedbacks.docs,
         createFeedbackEl
       );
     });
@@ -119,7 +124,7 @@ const handleSubmitEditProduct = (e) => {
     console.log(`id: ${id}   name${name}   price: ${price}`);
 
     getProducts().then((products) =>
-      render(rootEl, products.products, createCardEl)
+      render(rootEl, products.docs, createCardEl)
     );
   });
 };
@@ -280,7 +285,7 @@ const handleAddProduct = (e) => {
     .then((data) => {
       console.log(data);
       getProducts().then((products) =>
-        render(rootEl, products.products, createCardEl)
+        render(rootEl, products.docs, createCardEl)
       );
     })
     .catch((err) => console.log(err.message));
@@ -292,9 +297,7 @@ const render = (elToRenderIn, objArr, createCard) => {
   elToRenderIn.innerHTML = "";
   objArr.map((el) => addContent(elToRenderIn, createCard(el)));
 };
-getProducts().then((products) =>
-  render(rootEl, products.products, createCardEl)
-);
+getProducts().then((products) => render(rootEl, products.docs, createCardEl));
 
 /* const handleSearchProducts = ()=>{
   const searchTerm = inputSearch.value
@@ -392,9 +395,7 @@ const handleRegisterSubmit = (e) => {
 
 const handleLogout = () => {
   logout();
-  getProducts().then((products) =>
-    render(rootEl, products.products, createCardEl)
-  );
+  getProducts().then((products) => render(rootEl, products.docs, createCardEl));
 };
 
 const handleForgotPassword = (e) => {

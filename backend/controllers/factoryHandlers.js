@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const AppError = require("./../utils/AppError");
-const APImethods = require("./../utils/APImethodes");
+const APImethods = require("./../utils/APImethods");
 
 exports.deleteOne = (Model) =>
   asyncHandler(async (req, res, next) => {
@@ -14,9 +14,10 @@ exports.deleteOne = (Model) =>
   });
 exports.editOne = (Model) =>
   asyncHandler(async (req, res, next) => {
-    const editedDoc = Model.findByIdAndUpdate(req.params, req.body, {
+    console.log(req.body, req.params);
+    const editedDoc = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
-    });
+    }).lean();
     res.status(201).json({
       status: "success",
       editedDoc,
@@ -40,7 +41,7 @@ exports.getAll = (Model) =>
         product: req.params.productId,
       };
     const apimethods = new APImethods(Model.find(filter), req.query);
-    apimethods.filter().sort().selectFildes().makePagenation();
+    apimethods.filter().sort().selectFields().makePagination();
     const docs = await apimethods.query;
 
     res.status(200).json({
